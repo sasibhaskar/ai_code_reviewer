@@ -1,6 +1,6 @@
 # AI Code Reviewer
 
-An AI-powered code review tool. Paste your code, get a score, issues with line numbers, fix suggestions, and a refactored version — all powered by GPT-4o-mini.
+An AI-powered code review tool. Paste your code, get a score, issues with line numbers, fix suggestions, and a refactored version - all powered by GPT-4-mini.
 
 ## Features
 
