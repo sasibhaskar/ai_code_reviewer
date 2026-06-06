@@ -9,11 +9,12 @@ export async function POST(req: Request) {
     issue: { line: number; severity: string; description: string };
   };
 
-  const { object } = await generateObject({
-    model: openai("gpt-4o-mini"),
-    schema: fixSchema,
-    system: "You are a precise code fixer. Fix only the specific issue described. Keep all other code identical.",
-    prompt: `Fix ONLY this issue in the code:
+  try {
+    const { object } = await generateObject({
+      model: openai("gpt-4o-mini"),
+      schema: fixSchema,
+      system: "You are a precise code fixer. Fix only the specific issue described. Keep all other code identical.",
+      prompt: `Fix ONLY this issue in the code:
 
 Issue (line ${issue.line}, ${issue.severity}): ${issue.description}
 
@@ -23,7 +24,14 @@ ${code}
 \`\`\`
 
 Return the corrected code and a one-sentence explanation.`,
-  });
+    });
 
-  return Response.json(object);
+    return Response.json(object);
+  } catch (err) {
+    console.error("Fix API error:", err);
+    return Response.json(
+      { error: err instanceof Error ? err.message : "Internal server error" },
+      { status: 500 }
+    );
+  }
 }

@@ -14,18 +14,26 @@ export async function POST(req: Request) {
     return Response.json({ error: "No code provided" }, { status: 400 });
   }
 
-  const { object } = await generateObject({
-    model: openai("gpt-4o-mini"),
-    schema: reviewSchema,
-    system: SYSTEM_PROMPTS[style],
-    prompt: `Review this ${language} code:
+  try {
+    const { object } = await generateObject({
+      model: openai("gpt-4o-mini"),
+      schema: reviewSchema,
+      system: SYSTEM_PROMPTS[style],
+      prompt: `Review this ${language} code:
 
 \`\`\`${language.toLowerCase()}
 ${code}
 \`\`\`
 
 Identify all issues with accurate line numbers. Be thorough.`,
-  });
+    });
 
-  return Response.json(object);
+    return Response.json(object);
+  } catch (err) {
+    console.error("Review API error:", err);
+    return Response.json(
+      { error: err instanceof Error ? err.message : "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
